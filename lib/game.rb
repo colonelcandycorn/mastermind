@@ -2,7 +2,24 @@ class Game
   require_relative './player'
   require_relative './computer'
 
-  def initialize() end
+  attr_accessor :player
+
+  def initialize
+    @turn = 0
+    @board = Board.new
+    @computer = Computer.new
+  end
+
+  def create_player(name)
+    @player = Player.new(name)
+  end
+
+  def create_name
+    name = gets.chomp.delete('^a-zA-Z')
+    return create_name if name.empty?
+
+    name
+  end
 
   def find_perfect_matches(guess, code)
     matches = []

@@ -1,4 +1,9 @@
 class Player
+
+  def initialize(name)
+    @name = name
+  end
+  
   def take_a_guess
     test = /[ROYGBP]{4,}/
     puts 'Please choose your four color code from R, O, Y, G, B, or P'
