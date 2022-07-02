@@ -1,6 +1,6 @@
 class Board
   def initialize
-    @border = '  +-------+ '
+    @border = '   +-------+'
     @guesses = []
     @clues = []
     @header = '    Guess       Clues'
@@ -13,7 +13,7 @@ class Board
     puts @header
     @guesses.each_with_index do |guess_array, index|
       puts @border * 2
-      puts "#{numbers[index]} |#{guess_array.join(' ')}|   |#{@clues[index].join(' ')}|"
+      puts "%2d |#{guess_array.join(' ')}|   |#{@clues[index].join(' ')}|" % numbers[index]
       puts @border * 2
     end
   end
