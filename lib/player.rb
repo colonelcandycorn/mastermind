@@ -1,4 +1,6 @@
 class Player
+  attr_accessor :name
+  
   def initialize(name)
     @name = name
     @score = 0
@@ -6,7 +8,7 @@ class Player
 
   def take_a_guess
     test = /[ROYGBP]{4,}/
-    puts 'Please choose your four color code from R, O, Y, G, B, or P'
+    puts "#{@name} please choose your four color code from R, O, Y, G, B, or P"
     guess = gets.chomp.upcase.delete('^A-Z')
     unless test.match(guess) && guess.length >= 4
       puts 'Invalid Response Try Again'

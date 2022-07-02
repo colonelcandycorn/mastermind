@@ -18,6 +18,7 @@ class Game
   end
 
   def create_name
+    puts 'Please enter your name'
     name = gets.chomp.delete('^a-zA-Z')
     return create_name if name.empty?
 
@@ -34,12 +35,20 @@ class Game
     clue =
       build_clue(find_perfect_matches(guess, code), find_no_matches(guess, code))
     @board.display_guesses(guess, clue)
-    declare_round_winner if clue == %w[B B B B]
+    return declare_round_winner if clue == %w[B B B B]
+
+    declare_failure if @guesses == 12
   end
 
   def declare_round_winner
-    puts 'You guessed the code'
+    puts "Congrats, #{@player.name}! You guessed the code!"
+    puts "It took you #{@guesses} guesses to get it right"
     @winner = true
+  end
+
+  def declare_failure
+    puts 'You failed to guess the code in 12 turns'
+    puts "The code was: #{@code.join('')}"
   end
 
   def find_perfect_matches(guess, code)
@@ -61,7 +70,7 @@ class Game
 
   def build_clue(perfect_matches, no_matches)
     clue = perfect_matches + no_matches
-    clue.push('W') until clue.length == 4
+    clue === %w[B B B] ? clue.push('_') : clue.push('W') until clue.length == 4
     clue.shuffle
   end
 end
