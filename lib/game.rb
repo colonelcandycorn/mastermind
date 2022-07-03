@@ -6,7 +6,7 @@ class Game
   attr_accessor :player, :turn, :winner, :guesses, :code
 
   def initialize
-    @turn = 0
+    @turn = 1
     @winner = false
     @guesses = 0
     @board = Board.new
@@ -30,7 +30,8 @@ class Game
   end
 
   def play_round(code)
-    guess = @player.parse_guess(@player.take_a_guess)
+    guess =
+      @turn.zero? ? @player.parse_guess(@player.take_a_guess) : @computer.choose_move
     @guesses += 1
     clue =
       build_clue(find_perfect_matches(guess, code), find_no_matches(guess, code))
@@ -41,21 +42,32 @@ class Game
   end
 
   def declare_round_winner
-    puts "Congrats, #{@player.name}! You guessed the code!"
-    puts "It took you #{@guesses} guesses to get it right"
+    if @turn.zero?
+      puts "Congrats, #{@player.name}! You guessed the code!"
+      puts "It took you #{@guesses} guesses to get it right"
+    else
+      puts 'Oh no the Evil computer won this round!'
+      puts "It took the computer #{@guesses} to get it right"
+    end
     @winner = true
   end
 
   def declare_failure
-    puts 'You failed to guess the code in 12 turns'
+    if @turn.zero?
+      puts 'You failed to guess the code in 12 turns'
+    else
+      puts 'The computer failed to guess the code'
+    end
     puts "The code was: #{@code.join('')}"
   end
 
   def find_perfect_matches(guess, code)
     matches = []
     guess.each_with_index do |color, index|
-      matches.push('B') if color == code[index]
-      next
+      next unless color == code[index]
+
+      matches.push('B')
+      @computer.correct_guesses << [color, index] if @turn == 1
     end
     matches
   end
@@ -70,7 +82,7 @@ class Game
 
   def build_clue(perfect_matches, no_matches)
     clue = perfect_matches + no_matches
-    clue === %w[B B B] ? clue.push('_') : clue.push('W') until clue.length == 4
+    clue == %w[B B B] ? clue.push('_') : clue.push('W') until clue.length == 4
     clue.shuffle
   end
 end
