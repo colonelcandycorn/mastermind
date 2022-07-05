@@ -108,11 +108,27 @@ class Game
     clue == %w[B B B] ? clue.push('_') : clue.push('W') until clue.length == 4
     clue.shuffle
   end
-end
 
-game = Game.new
-game.create_player(game.create_name)
-game.determine_codemaker
-game.code = game.create_code
-game.play_round(game.code)
-puts game.code
+  def end_game
+    puts "That's the end of the game."
+    puts "The computer scored #{@computer.score} points"
+    puts "#{@player.name} scored #{@player.score} points"
+    if @player.score > @computer.score
+      puts "Congrats #{@player.name} you kicked the computer's butt"
+    elsif @computer.score < @player.score
+      puts 'OH NO! The computer won!'
+    else
+      puts 'Oh bother! A TIE!'
+    end
+  end
+
+  def play_game
+    create_player(create_name)
+    determine_codemaker
+    2.times do
+      @code = create_code
+      play_round(@code)
+    end
+    end_game
+  end
+end
