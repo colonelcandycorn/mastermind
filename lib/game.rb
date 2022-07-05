@@ -40,7 +40,7 @@ class Game
       @turn.zero? ? @player.parse_guess(@player.take_a_guess) : @computer.choose_move
     @guesses += 1
     clue =
-      build_clue(find_perfect_matches(guess, code), find_no_matches(guess, code))
+      build_clue(find_perfect_matches(guess, code), find_excess_matches(guess, code))
     @board.display_guesses(guess, clue)
     return declare_round_winner if clue == %w[B B B B]
 
@@ -95,16 +95,17 @@ class Game
     matches
   end
 
-  def find_no_matches(guess, code)
-    no_matches_guess = []
-    no_matches_code = []
-    guess.each { |color| no_matches_guess.push('_') unless code.any?(color) }
-    code.each { |color| no_matches_code.push('_') unless guess.any?(color) }
-    no_matches_guess.length >= no_matches_code.length ? no_matches_guess : no_matches_code
+  def find_excess_matches(guess, code)
+    excess_matches = []
+    guess.uniq.each do |color|
+      excess = guess.count(color) - code.count(color)
+      excess.times { excess_matches.push('_') } if excess.positive?
+    end
+    excess_matches
   end
 
-  def build_clue(perfect_matches, no_matches)
-    clue = perfect_matches + no_matches
+  def build_clue(perfect_matches, excess_matches)
+    clue = perfect_matches + excess_matches
     clue == %w[B B B] ? clue.push('_') : clue.push('W') until clue.length == 4
     clue.shuffle
   end
