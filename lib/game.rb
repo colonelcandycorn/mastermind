@@ -24,6 +24,12 @@ class Game
     name
   end
 
+  def determine_codemaker
+    puts "#{@player.name} would you like to be the codemaker?"
+    ans = gets.chomp.downcase.delete('^a-z')
+    @turn = ans.include?('y') ? 1 : 0
+  end
+
   def create_code
     @code =
       turn.zero? ? @computer.generate_code : @player.parse_guess(@player.take_a_guess)
@@ -106,6 +112,7 @@ end
 
 game = Game.new
 game.create_player(game.create_name)
+game.determine_codemaker
 game.code = game.create_code
 game.play_round(game.code)
 puts game.code
