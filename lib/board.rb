@@ -1,4 +1,5 @@
 class Board
+  attr_accessor :guesses, :clues
   def initialize
     @border = '   +-------+'
     @guesses = []

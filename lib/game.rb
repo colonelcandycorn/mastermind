@@ -3,11 +3,10 @@ class Game
   require_relative './computer'
   require_relative './board'
 
-  attr_accessor :player, :turn, :winner, :guesses, :code
+  attr_accessor :player, :turn, :guesses, :code
 
   def initialize
-    @turn = 1
-    @winner = false
+    @turn = 0
     @guesses = 0
     @board = Board.new
     @computer = Computer.new
@@ -26,7 +25,8 @@ class Game
   end
 
   def create_code
-    @code = @computer.generate_code
+    @code =
+      turn.zero? ? @computer.generate_code : @player.parse_guess(@player.take_a_guess)
   end
 
   def play_round(code)
@@ -38,7 +38,23 @@ class Game
     @board.display_guesses(guess, clue)
     return declare_round_winner if clue == %w[B B B B]
 
-    declare_failure if @guesses == 12
+    return declare_failure if @guesses == 12
+
+    play_round(code)
+  end
+
+  def end_round
+    if turn.zero?
+      @turn = 1
+      @computer.score += @guesses
+    else
+      @turn = 0
+      @player.score += @guesses
+      @computer.correct_guesses = []
+    end
+    @guesses = 0
+    @board.guesses = []
+    @board.clues = []
   end
 
   def declare_round_winner
@@ -49,7 +65,7 @@ class Game
       puts 'Oh no the Evil computer won this round!'
       puts "It took the computer #{@guesses} to get it right"
     end
-    @winner = true
+    end_round
   end
 
   def declare_failure
@@ -59,6 +75,7 @@ class Game
       puts 'The computer failed to guess the code'
     end
     puts "The code was: #{@code.join('')}"
+    end_round
   end
 
   def find_perfect_matches(guess, code)
@@ -90,7 +107,5 @@ end
 game = Game.new
 game.create_player(game.create_name)
 game.code = game.create_code
-until game.guesses == 12 || game.winner
-  game.play_round(game.code)
-end
+game.play_round(game.code)
 puts game.code

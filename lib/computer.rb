@@ -21,6 +21,7 @@ class Computer
 
       guess[index] = @options[rand(6)]
     end
+    sleep 1
     guess
   end
 end
