@@ -124,6 +124,7 @@ class Game
   end
 
   def play_game
+    print_rules
     create_player(create_name)
     determine_codemaker
     2.times do
@@ -131,5 +132,17 @@ class Game
       play_round(@code)
     end
     end_game
+  end
+
+  def print_rules
+    puts 'Either you or the computer will be the codemaker'
+    puts 'The codemaker will create a 4 letter code'
+    puts 'The guesser will attempt to guess the four letter code'
+    puts 'Feedback will be given in the form of a clue'
+    puts 'The clue will either contain a \'B\', \'W\', or a \'_\''
+    puts 'The B signifies one of your guesses is the right letter and right place'
+    puts 'W signifies right letter but wrong place'
+    puts 'An underscore means that the letter isn\'t in the clue or you\'ve put too many of some letter in your guess'
+    puts 'The clue is shuffled so there isn\'t an obvious way to tell which part of guess is correct'
   end
 end
